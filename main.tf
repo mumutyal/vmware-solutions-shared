@@ -96,7 +96,37 @@ resource "vcd_nsxv_dnat" "rule_internet_ssh" {
   original_address = module.ibm_vmware_solutions_shared_instance.default_external_network_ip
   original_port    = 22
 
-  translated_address = vcd_vapp_vm.vm_1.network[0].ip
+  translated_address = vcd_vapp_vm.vm_2.network[0].ip
+  translated_port    = 22
+  protocol           = "tcp"
+}
+# Create DNAT rule to allow SSH from the Internet
+resource "vcd_nsxv_dnat" "rule_internet_ssh" {
+  count = tobool(var.allow_ssh) == true ? 1 :0
+
+  edge_gateway = module.ibm_vmware_solutions_shared_instance.edge_gateway_name
+  network_type = "ext"
+  network_name = module.ibm_vmware_solutions_shared_instance.external_network_name_2
+
+  original_address = module.ibm_vmware_solutions_shared_instance.default_external_network_ip
+  original_port    = 22
+
+  translated_address = vcd_vapp_vm.vm_3.network[0].ip
+  translated_port    = 22
+  protocol           = "tcp"
+}
+# Create DNAT rule to allow SSH from the Internet
+resource "vcd_nsxv_dnat" "rule_internet_ssh" {
+  count = tobool(var.allow_ssh) == true ? 1 :0
+
+  edge_gateway = module.ibm_vmware_solutions_shared_instance.edge_gateway_name
+  network_type = "ext"
+  network_name = module.ibm_vmware_solutions_shared_instance.external_network_name_2
+
+  original_address = module.ibm_vmware_solutions_shared_instance.default_external_network_ip
+  original_port    = 22
+
+  translated_address = vcd_vapp_vm.vm_3.network[0].ip
   translated_port    = 22
   protocol           = "tcp"
 }
