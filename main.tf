@@ -86,7 +86,7 @@ resource "vcd_nsxv_firewall_rule" "rule_internet_ssh" {
 }
 
 # Create DNAT rule to allow SSH from the Internet
-resource "vcd_nsxv_dnat" "rule_internet_ssh" {
+resource "vcd_nsxv_dnat" "rule_internet_ssh2" {
   count = tobool(var.allow_ssh) == true ? 1 :0
 
   edge_gateway = module.ibm_vmware_solutions_shared_instance.edge_gateway_name
@@ -101,7 +101,7 @@ resource "vcd_nsxv_dnat" "rule_internet_ssh" {
   protocol           = "tcp"
 }
 # Create DNAT rule to allow SSH from the Internet
-resource "vcd_nsxv_dnat" "rule_internet_ssh" {
+resource "vcd_nsxv_dnat" "rule_internet_ssh3" {
   count = tobool(var.allow_ssh) == true ? 1 :0
 
   edge_gateway = module.ibm_vmware_solutions_shared_instance.edge_gateway_name
@@ -116,7 +116,7 @@ resource "vcd_nsxv_dnat" "rule_internet_ssh" {
   protocol           = "tcp"
 }
 # Create DNAT rule to allow SSH from the Internet
-resource "vcd_nsxv_dnat" "rule_internet_ssh" {
+resource "vcd_nsxv_dnat" "rule_internet_ssh4" {
   count = tobool(var.allow_ssh) == true ? 1 :0
 
   edge_gateway = module.ibm_vmware_solutions_shared_instance.edge_gateway_name
