@@ -156,6 +156,18 @@ resource "vcd_vapp_vm" "vm_2" {
     "guest.hostname" = "vm-rhel-02"
   }
 
+  network {
+    type               = "org"
+    name               = vcd_vapp_org_network.tutorial_network.org_network_name
+    ip_allocation_mode = "POOL"
+    is_primary         = true
+  }
+
+  customization {
+    auto_generate_password     = true
+  }
+}
+# Create VM1
 resource "vcd_vapp_vm" "vm_3" {
   vapp_name     = vcd_vapp.vmware_tutorial_vapp.name
   name          = "vm-rhel-03"
@@ -167,6 +179,19 @@ resource "vcd_vapp_vm" "vm_3" {
   guest_properties = {
     "guest.hostname" = "vm-rhel-03"
   }
+
+  network {
+    type               = "org"
+    name               = vcd_vapp_org_network.tutorial_network.org_network_name
+    ip_allocation_mode = "POOL"
+    is_primary         = true
+  }
+
+  customization {
+    auto_generate_password     = true
+  }
+}
+# Create VM2
 resource "vcd_vapp_vm" "vm_4" {
   vapp_name     = vcd_vapp.vmware_tutorial_vapp.name
   name          = "vm-rhel-04"
@@ -178,6 +203,7 @@ resource "vcd_vapp_vm" "vm_4" {
   guest_properties = {
     "guest.hostname" = "vm-rhel-04"
   }
+
   network {
     type               = "org"
     name               = vcd_vapp_org_network.tutorial_network.org_network_name
