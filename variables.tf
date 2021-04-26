@@ -20,12 +20,16 @@ variable "vcd_url" {
 
 variable "vdc_name" {
   description = "vCloud Director virtual datacenter."
-  default = "vmware-tutorial"
+  default = ""
 }
 
 variable "vdc_edge_gateway_name" {
   description = "vCloud Director virtual datacenter edge gateway name."
   default = ""
+}
+
+variable "VM_Public_ips" {
+  description = "Enter the List of public ips form datacenter: ip1,ip2,ip3. Mandatory"
 }
 
 variable "allow_ssh" {
