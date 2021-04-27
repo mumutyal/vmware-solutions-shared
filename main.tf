@@ -135,7 +135,7 @@ resource "vcd_nsxv_dnat" "rule_internet_ssh4" {
   original_address = element(local.publiciplist, 2)
   original_port    = 22
 
-  translated_address = vcd_vapp_vm.vm_3.network[0].ip
+  translated_address = vcd_vapp_vm.vm_4.network[0].ip
   translated_port    = 22
   protocol           = "tcp"
 }
