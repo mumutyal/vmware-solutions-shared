@@ -94,7 +94,7 @@ resource "vcd_nsxv_firewall_rule" "rule_internet_ssh" {
 }
 
 # Create DNAT rule to allow SSH from the Internet
-resource "vcd_nsxv_dnat" "rule_internet_ssh2" {
+resource "vcd_nsxv_dnat" "rule_internet_ssh1" {
   count = tobool(var.allow_ssh) == true ? 1 :0
 
   edge_gateway = module.ibm_vmware_solutions_shared_instance.edge_gateway_name
@@ -103,6 +103,21 @@ resource "vcd_nsxv_dnat" "rule_internet_ssh2" {
 
   original_address =  element(local.publiciplist, 0)
 
+  original_port    = 22
+
+  translated_address = vcd_vapp_vm.vm_1.network[0].ip
+  translated_port    = 22
+  protocol           = "tcp"
+}
+# Create DNAT rule to allow SSH from the Internet
+resource "vcd_nsxv_dnat" "rule_internet_ssh2" {
+  count = tobool(var.allow_ssh) == true ? 1 :0
+
+  edge_gateway = module.ibm_vmware_solutions_shared_instance.edge_gateway_name
+  network_type = "ext"
+  network_name = module.ibm_vmware_solutions_shared_instance.external_network_name_2
+
+  original_address = element(local.publiciplist, 1)
   original_port    = 22
 
   translated_address = vcd_vapp_vm.vm_2.network[0].ip
@@ -117,7 +132,7 @@ resource "vcd_nsxv_dnat" "rule_internet_ssh3" {
   network_type = "ext"
   network_name = module.ibm_vmware_solutions_shared_instance.external_network_name_2
 
-  original_address = element(local.publiciplist, 1)
+  original_address = element(local.publiciplist, 2)
   original_port    = 22
 
   translated_address = vcd_vapp_vm.vm_3.network[0].ip
@@ -132,10 +147,41 @@ resource "vcd_nsxv_dnat" "rule_internet_ssh4" {
   network_type = "ext"
   network_name = module.ibm_vmware_solutions_shared_instance.external_network_name_2
 
-  original_address = element(local.publiciplist, 2)
+  original_address =  element(local.publiciplist, 3)
+
   original_port    = 22
 
   translated_address = vcd_vapp_vm.vm_4.network[0].ip
+  translated_port    = 22
+  protocol           = "tcp"
+}
+# Create DNAT rule to allow SSH from the Internet
+resource "vcd_nsxv_dnat" "rule_internet_ssh5" {
+  count = tobool(var.allow_ssh) == true ? 1 :0
+
+  edge_gateway = module.ibm_vmware_solutions_shared_instance.edge_gateway_name
+  network_type = "ext"
+  network_name = module.ibm_vmware_solutions_shared_instance.external_network_name_2
+
+  original_address = element(local.publiciplist, 4)
+  original_port    = 22
+
+  translated_address = vcd_vapp_vm.vm_5.network[0].ip
+  translated_port    = 22
+  protocol           = "tcp"
+}
+# Create DNAT rule to allow SSH from the Internet
+resource "vcd_nsxv_dnat" "rule_internet_ssh6" {
+  count = tobool(var.allow_ssh) == true ? 1 :0
+
+  edge_gateway = module.ibm_vmware_solutions_shared_instance.edge_gateway_name
+  network_type = "ext"
+  network_name = module.ibm_vmware_solutions_shared_instance.external_network_name_2
+
+  original_address = element(local.publiciplist, 5)
+  original_port    = 22
+
+  translated_address = vcd_vapp_vm.vm_6.network[0].ip
   translated_port    = 22
   protocol           = "tcp"
 }
@@ -182,7 +228,32 @@ resource "vcd_vapp_org_network" "tutorial_network_new" {
   org_network_name = vcd_network_routed.tutorial_network_new.name
 }
 
-# Create VM
+# Create VM1
+resource "vcd_vapp_vm" "vm_1" {
+  vapp_name     = vcd_vapp.vmware_satellite_vapp.name
+  name          = "vm-rhel-01"
+  catalog_name  = "Public Catalog"
+  template_name = "RedHat-7-Template-Official"
+  memory        = 8192
+  cpus          = 2
+
+  guest_properties = {
+    "guest.hostname" = "vm-rhel-01"
+  }
+
+
+  network {
+    type               = "org"
+    name               = vcd_vapp_org_network.tutorial_network_new.org_network_name
+    ip_allocation_mode = "POOL"
+    is_primary         = true
+  }
+
+  customization {
+    auto_generate_password     = true
+  }
+}
+# Create VM2
 resource "vcd_vapp_vm" "vm_2" {
   vapp_name     = vcd_vapp.vmware_satellite_vapp.name
   name          = "vm-rhel-02"
@@ -206,7 +277,7 @@ resource "vcd_vapp_vm" "vm_2" {
     auto_generate_password     = true
   }
 }
-# Create VM1
+# Create VM3
 resource "vcd_vapp_vm" "vm_3" {
   vapp_name     = vcd_vapp.vmware_satellite_vapp.name
   name          = "vm-rhel-03"
@@ -230,7 +301,7 @@ resource "vcd_vapp_vm" "vm_3" {
     auto_generate_password     = true
   }
 }
-# Create VM2
+# Create VM4
 resource "vcd_vapp_vm" "vm_4" {
   vapp_name     = vcd_vapp.vmware_satellite_vapp.name
   name          = "vm-rhel-04"
@@ -241,6 +312,54 @@ resource "vcd_vapp_vm" "vm_4" {
 
   guest_properties = {
     "guest.hostname" = "vm-rhel-04"
+  }
+
+  network {
+    type               = "org"
+    name               = vcd_vapp_org_network.tutorial_network_new.org_network_name
+    ip_allocation_mode = "POOL"
+    is_primary         = true
+  }
+
+  customization {
+    auto_generate_password     = true
+  }
+}
+# Create VM5
+resource "vcd_vapp_vm" "vm_5" {
+  vapp_name     = vcd_vapp.vmware_satellite_vapp.name
+  name          = "vm-rhel-05"
+  catalog_name  = "Public Catalog"
+  template_name = "RedHat-7-Template-Official"
+  memory        = 8192
+  cpus          = 2
+
+  guest_properties = {
+    "guest.hostname" = "vm-rhel-05"
+  }
+
+  network {
+    type               = "org"
+    name               = vcd_vapp_org_network.tutorial_network_new.org_network_name
+    ip_allocation_mode = "POOL"
+    is_primary         = true
+  }
+
+  customization {
+    auto_generate_password     = true
+  }
+}
+# Create VM6
+resource "vcd_vapp_vm" "vm_6" {
+  vapp_name     = vcd_vapp.vmware_satellite_vapp.name
+  name          = "vm-rhel-06"
+  catalog_name  = "Public Catalog"
+  template_name = "RedHat-7-Template-Official"
+  memory        = 8192
+  cpus          = 2
+
+  guest_properties = {
+    "guest.hostname" = "vm-rhel-06"
   }
 
   network {
