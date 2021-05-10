@@ -32,6 +32,11 @@ variable "VM_Public_ips" {
   description = "Enter the List of public ips form datacenter: ip1,ip2,ip3. Mandatory"
 }
 
+variable "activation_key" {
+  description = "Enter valid redhat activation key."
+}
+
+
 variable "allow_ssh" {
   description = "Set to false to not configure SSH into the VM."
   default = true

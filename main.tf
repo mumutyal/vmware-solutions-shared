@@ -250,7 +250,8 @@ resource "vcd_vapp_vm" "vm_1" {
   }
 
   customization {
-    auto_generate_password     = true
+    auto_generate_password     = false
+    admin_password             = "Vmware@1234"
   }
 }
 # Create VM2
@@ -274,7 +275,8 @@ resource "vcd_vapp_vm" "vm_2" {
   }
 
   customization {
-    auto_generate_password     = true
+    auto_generate_password     = false
+    admin_password             = "Vmware@1234"
   }
 }
 # Create VM3
@@ -298,7 +300,8 @@ resource "vcd_vapp_vm" "vm_3" {
   }
 
   customization {
-    auto_generate_password     = true
+    auto_generate_password     = false
+    admin_password             = "Vmware@1234"
   }
 }
 # Create VM4
@@ -322,7 +325,8 @@ resource "vcd_vapp_vm" "vm_4" {
   }
 
   customization {
-    auto_generate_password     = true
+    auto_generate_password     = false
+    admin_password             = "Vmware@1234"
   }
 }
 # Create VM5
@@ -346,7 +350,9 @@ resource "vcd_vapp_vm" "vm_5" {
   }
 
   customization {
-    auto_generate_password     = true
+    auto_generate_password     = false
+    admin_password             = "Vmware@1234"
+
   }
 }
 # Create VM6
@@ -370,6 +376,47 @@ resource "vcd_vapp_vm" "vm_6" {
   }
 
   customization {
-    auto_generate_password     = true
+    auto_generate_password     = false
+    admin_password             = "Vmware@1234"
+
   }
 }
+
+resource "null_resource"  "attachhost" {
+
+   count = local.totalVMs
+
+
+   provisioner "file" {
+    source      = "attachHost.sh"
+    destination = "/tmp/attachHost.sh"
+
+    connection {
+    type     = "ssh"
+    user     = "root"
+    password = "Vmware@1234"
+    host     = "${element(local.publiciplist,count.index)}"
+   }
+  }
+   provisioner "remote-exec" {
+    inline = [
+      "hostnamectl set-hostname \"VM${count.index}\"",
+      "rpm -ivh http://52.117.132.7/pub/katello-ca-consumer-latest.noarch.rpm",
+      "uuid=`uuidgen`",
+      "echo '{\"dmi.system.uuid\": \"'$uuid'\"}' > /etc/rhsm/facts/uuid_override.facts",
+      "subscription-manager register --org=\"customer\" --activationkey=\"${var.activation_key}\" --force",
+      "subscription-manager refresh",
+      "subscription-manager repos --enable=*",
+      "chmod +x /tmp/attachHost.sh",
+      "/tmp/attachHost.sh",
+    ]
+    connection {
+    type     = "ssh"
+    user     = "root"
+    password = "Vmware@1234"
+    host     = "${element(local.publiciplist,count.index)}"
+   }
+  }
+  depends_on = [vcd_vapp_vm.vm_1]
+}
+
