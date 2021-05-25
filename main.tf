@@ -417,6 +417,6 @@ resource "null_resource"  "attachhost" {
     host     = "${element(local.publiciplist,count.index)}"
    }
   }
-  depends_on = [vcd_vapp_vm.vm_1, vcd_vapp_vm.vm_2, vcd_vapp_vm.vm_3, vcd_vapp_vm.vm_4, vcd_vapp_vm.vm_5,vcd_vapp_vm.vm_6]
+  depends_on = [vcd_vapp_vm.vm_1, vcd_vapp_vm.vm_2, vcd_vapp_vm.vm_3, vcd_vapp_vm.vm_4, vcd_vapp_vm.vm_5, vcd_vapp_vm.vm_6]
 }
 
