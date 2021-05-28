@@ -103,10 +103,10 @@ resource "vcd_nsxv_dnat" "rule_internet_ssh1" {
 
   original_address =  element(local.publiciplist, 0)
 
-  original_port    = 22
+  original_port    = "any"
 
   translated_address = vcd_vapp_vm.vm_1.network[0].ip
-  translated_port    = 22
+  translated_port    = "any"
   protocol           = "tcp"
 }
 # Create DNAT rule to allow SSH from the Internet
@@ -118,10 +118,10 @@ resource "vcd_nsxv_dnat" "rule_internet_ssh2" {
   network_name = module.ibm_vmware_solutions_shared_instance.external_network_name_2
 
   original_address = element(local.publiciplist, 1)
-  original_port    = 22
+  original_port    = "any"
 
   translated_address = vcd_vapp_vm.vm_2.network[0].ip
-  translated_port    = 22
+  translated_port    = "any"
   protocol           = "tcp"
 }
 # Create DNAT rule to allow SSH from the Internet
@@ -133,10 +133,10 @@ resource "vcd_nsxv_dnat" "rule_internet_ssh3" {
   network_name = module.ibm_vmware_solutions_shared_instance.external_network_name_2
 
   original_address = element(local.publiciplist, 2)
-  original_port    = 22
+  original_port    = "any"
 
   translated_address = vcd_vapp_vm.vm_3.network[0].ip
-  translated_port    = 22
+  translated_port    = "any"
   protocol           = "tcp"
 }
 # Create DNAT rule to allow SSH from the Internet
@@ -149,10 +149,10 @@ resource "vcd_nsxv_dnat" "rule_internet_ssh4" {
 
   original_address =  element(local.publiciplist, 3)
 
-  original_port    = 22
+  original_port    = "any"
 
   translated_address = vcd_vapp_vm.vm_4.network[0].ip
-  translated_port    = 22
+  translated_port    = "any"
   protocol           = "tcp"
 }
 # Create DNAT rule to allow SSH from the Internet
@@ -164,10 +164,10 @@ resource "vcd_nsxv_dnat" "rule_internet_ssh5" {
   network_name = module.ibm_vmware_solutions_shared_instance.external_network_name_2
 
   original_address = element(local.publiciplist, 4)
-  original_port    = 22
+  original_port    = "any"
 
   translated_address = vcd_vapp_vm.vm_5.network[0].ip
-  translated_port    = 22
+  translated_port    = "any"
   protocol           = "tcp"
 }
 # Create DNAT rule to allow SSH from the Internet
@@ -179,10 +179,10 @@ resource "vcd_nsxv_dnat" "rule_internet_ssh6" {
   network_name = module.ibm_vmware_solutions_shared_instance.external_network_name_2
 
   original_address = element(local.publiciplist, 5)
-  original_port    = 22
+  original_port    = "any"
 
   translated_address = vcd_vapp_vm.vm_6.network[0].ip
-  translated_port    = 22
+  translated_port    = "any"
   protocol           = "tcp"
 }
 
@@ -234,8 +234,15 @@ resource "vcd_vapp_vm" "vm_1" {
   name          = "vm-rhel-01"
   catalog_name  = "Public Catalog"
   template_name = "RedHat-7-Template-Official"
-  memory        = 8192
-  cpus          = 2
+  memory        = 16384
+  cpus          = 4
+  override_template_disk {
+    bus_type         = "paravirtual"
+    size_in_mb       = "102400"
+    bus_number       = 0
+    unit_number      = 0
+    storage_profile  = "10 IOPS/GB"
+  }
 
   guest_properties = {
     "guest.hostname" = "vm-rhel-01"
@@ -260,8 +267,15 @@ resource "vcd_vapp_vm" "vm_2" {
   name          = "vm-rhel-02"
   catalog_name  = "Public Catalog"
   template_name = "RedHat-7-Template-Official"
-  memory        = 8192
-  cpus          = 2
+  memory        = 16384
+  cpus          = 4
+  override_template_disk {
+    bus_type         = "paravirtual"
+    size_in_mb       = "102400"
+    bus_number       = 0
+    unit_number      = 0
+    storage_profile  = "10 IOPS/GB"
+  }
 
   guest_properties = {
     "guest.hostname" = "vm-rhel-02"
@@ -285,8 +299,15 @@ resource "vcd_vapp_vm" "vm_3" {
   name          = "vm-rhel-03"
   catalog_name  = "Public Catalog"
   template_name = "RedHat-7-Template-Official"
-  memory        = 8192
-  cpus          = 2
+  memory        = 16384
+  cpus          = 4
+  override_template_disk {
+    bus_type         = "paravirtual"
+    size_in_mb       = "102400"
+    bus_number       = 0
+    unit_number      = 0
+    storage_profile  = "10 IOPS/GB"
+  }
 
   guest_properties = {
     "guest.hostname" = "vm-rhel-03"
@@ -310,8 +331,15 @@ resource "vcd_vapp_vm" "vm_4" {
   name          = "vm-rhel-04"
   catalog_name  = "Public Catalog"
   template_name = "RedHat-7-Template-Official"
-  memory        = 8192
-  cpus          = 2
+  memory        = 16384
+  cpus          = 4
+  override_template_disk {
+    bus_type         = "paravirtual"
+    size_in_mb       = "102400"
+    bus_number       = 0
+    unit_number      = 0
+    storage_profile  = "10 IOPS/GB"
+  }
 
   guest_properties = {
     "guest.hostname" = "vm-rhel-04"
@@ -335,8 +363,15 @@ resource "vcd_vapp_vm" "vm_5" {
   name          = "vm-rhel-05"
   catalog_name  = "Public Catalog"
   template_name = "RedHat-7-Template-Official"
-  memory        = 8192
-  cpus          = 2
+  memory        = 16384
+  cpus          = 4
+  override_template_disk {
+    bus_type         = "paravirtual"
+    size_in_mb       = "102400"
+    bus_number       = 0
+    unit_number      = 0
+    storage_profile  = "10 IOPS/GB"
+  }
 
   guest_properties = {
     "guest.hostname" = "vm-rhel-05"
@@ -361,8 +396,15 @@ resource "vcd_vapp_vm" "vm_6" {
   name          = "vm-rhel-06"
   catalog_name  = "Public Catalog"
   template_name = "RedHat-7-Template-Official"
-  memory        = 8192
-  cpus          = 2
+  memory        = 16384
+  cpus          = 4
+  override_template_disk {
+    bus_type         = "paravirtual"
+    size_in_mb       = "102400"
+    bus_number       = 0
+    unit_number      = 0
+    storage_profile  = "10 IOPS/GB"
+  }
 
   guest_properties = {
     "guest.hostname" = "vm-rhel-06"
