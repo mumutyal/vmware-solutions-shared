@@ -36,6 +36,11 @@ variable "activation_key" {
   description = "Enter valid redhat activation key."
 }
 
+variable "VM_password" {
+  description = "Enter valid redhat activation key."
+}
+
+
 
 variable "allow_ssh" {
   description = "Set to false to not configure SSH into the VM."

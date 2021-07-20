@@ -95,7 +95,7 @@ resource "vcd_nsxv_firewall_rule" "rule_internet_ssh" {
 
 # Create DNAT rule to allow SSH from the Internet
 resource "vcd_nsxv_dnat" "rule_internet_ssh1" {
-  count = tobool(var.allow_ssh) == true ? 1 :0
+  count = tobool(var.allow_ssh) == true ? local.totalVMs :0
 
   edge_gateway = module.ibm_vmware_solutions_shared_instance.edge_gateway_name
   network_type = "ext"
@@ -105,83 +105,7 @@ resource "vcd_nsxv_dnat" "rule_internet_ssh1" {
 
   original_port    = "any"
 
-  translated_address = vcd_vapp_vm.vm_1.network[0].ip
-  translated_port    = "any"
-  protocol           = "tcp"
-}
-# Create DNAT rule to allow SSH from the Internet
-resource "vcd_nsxv_dnat" "rule_internet_ssh2" {
-  count = tobool(var.allow_ssh) == true ? 1 :0
-
-  edge_gateway = module.ibm_vmware_solutions_shared_instance.edge_gateway_name
-  network_type = "ext"
-  network_name = module.ibm_vmware_solutions_shared_instance.external_network_name_2
-
-  original_address = element(local.publiciplist, 1)
-  original_port    = "any"
-
-  translated_address = vcd_vapp_vm.vm_2.network[0].ip
-  translated_port    = "any"
-  protocol           = "tcp"
-}
-# Create DNAT rule to allow SSH from the Internet
-resource "vcd_nsxv_dnat" "rule_internet_ssh3" {
-  count = tobool(var.allow_ssh) == true ? 1 :0
-
-  edge_gateway = module.ibm_vmware_solutions_shared_instance.edge_gateway_name
-  network_type = "ext"
-  network_name = module.ibm_vmware_solutions_shared_instance.external_network_name_2
-
-  original_address = element(local.publiciplist, 2)
-  original_port    = "any"
-
-  translated_address = vcd_vapp_vm.vm_3.network[0].ip
-  translated_port    = "any"
-  protocol           = "tcp"
-}
-# Create DNAT rule to allow SSH from the Internet
-resource "vcd_nsxv_dnat" "rule_internet_ssh4" {
-  count = tobool(var.allow_ssh) == true ? 1 :0
-
-  edge_gateway = module.ibm_vmware_solutions_shared_instance.edge_gateway_name
-  network_type = "ext"
-  network_name = module.ibm_vmware_solutions_shared_instance.external_network_name_2
-
-  original_address =  element(local.publiciplist, 3)
-
-  original_port    = "any"
-
-  translated_address = vcd_vapp_vm.vm_4.network[0].ip
-  translated_port    = "any"
-  protocol           = "tcp"
-}
-# Create DNAT rule to allow SSH from the Internet
-resource "vcd_nsxv_dnat" "rule_internet_ssh5" {
-  count = tobool(var.allow_ssh) == true ? 1 :0
-
-  edge_gateway = module.ibm_vmware_solutions_shared_instance.edge_gateway_name
-  network_type = "ext"
-  network_name = module.ibm_vmware_solutions_shared_instance.external_network_name_2
-
-  original_address = element(local.publiciplist, 4)
-  original_port    = "any"
-
-  translated_address = vcd_vapp_vm.vm_5.network[0].ip
-  translated_port    = "any"
-  protocol           = "tcp"
-}
-# Create DNAT rule to allow SSH from the Internet
-resource "vcd_nsxv_dnat" "rule_internet_ssh6" {
-  count = tobool(var.allow_ssh) == true ? 1 :0
-
-  edge_gateway = module.ibm_vmware_solutions_shared_instance.edge_gateway_name
-  network_type = "ext"
-  network_name = module.ibm_vmware_solutions_shared_instance.external_network_name_2
-
-  original_address = element(local.publiciplist, 5)
-  original_port    = "any"
-
-  translated_address = vcd_vapp_vm.vm_6.network[0].ip
+  translated_address = vcd_vapp_vm.vmware_instance[count.index].network[0].ip
   translated_port    = "any"
   protocol           = "tcp"
 }
@@ -228,10 +152,13 @@ resource "vcd_vapp_org_network" "tutorial_network_new" {
   org_network_name = vcd_network_routed.tutorial_network_new.name
 }
 
-# Create VM1
-resource "vcd_vapp_vm" "vm_1" {
+# Create VM
+resource "vcd_vapp_vm" "vmware_instance" {
+
+  count = local.totalVMs
+
   vapp_name     = vcd_vapp.vmware_satellite_vapp.name
-  name          = "vm-rhel-01"
+  name          = "vm-rhel-${count.index + 1}"
   catalog_name  = "Public Catalog"
   template_name = "RedHat-7-Template-Official"
   memory        = 16384
@@ -245,7 +172,7 @@ resource "vcd_vapp_vm" "vm_1" {
   }
 
   guest_properties = {
-    "guest.hostname" = "vm-rhel-01"
+    "guest.hostname" = "vm-rhel-${count.index + 1}"
   }
 
 
@@ -258,169 +185,7 @@ resource "vcd_vapp_vm" "vm_1" {
 
   customization {
     auto_generate_password     = false
-    admin_password             = "Vmware@1234"
-  }
-}
-# Create VM2
-resource "vcd_vapp_vm" "vm_2" {
-  vapp_name     = vcd_vapp.vmware_satellite_vapp.name
-  name          = "vm-rhel-02"
-  catalog_name  = "Public Catalog"
-  template_name = "RedHat-7-Template-Official"
-  memory        = 16384
-  cpus          = 4
-  override_template_disk {
-    bus_type         = "paravirtual"
-    size_in_mb       = "102400"
-    bus_number       = 0
-    unit_number      = 0
-    storage_profile  = "10 IOPS/GB"
-  }
-
-  guest_properties = {
-    "guest.hostname" = "vm-rhel-02"
-  }
-
-  network {
-    type               = "org"
-    name               = vcd_vapp_org_network.tutorial_network_new.org_network_name
-    ip_allocation_mode = "POOL"
-    is_primary         = true
-  }
-
-  customization {
-    auto_generate_password     = false
-    admin_password             = "Vmware@1234"
-  }
-}
-# Create VM3
-resource "vcd_vapp_vm" "vm_3" {
-  vapp_name     = vcd_vapp.vmware_satellite_vapp.name
-  name          = "vm-rhel-03"
-  catalog_name  = "Public Catalog"
-  template_name = "RedHat-7-Template-Official"
-  memory        = 16384
-  cpus          = 4
-  override_template_disk {
-    bus_type         = "paravirtual"
-    size_in_mb       = "102400"
-    bus_number       = 0
-    unit_number      = 0
-    storage_profile  = "10 IOPS/GB"
-  }
-
-  guest_properties = {
-    "guest.hostname" = "vm-rhel-03"
-  }
-
-  network {
-    type               = "org"
-    name               = vcd_vapp_org_network.tutorial_network_new.org_network_name
-    ip_allocation_mode = "POOL"
-    is_primary         = true
-  }
-
-  customization {
-    auto_generate_password     = false
-    admin_password             = "Vmware@1234"
-  }
-}
-# Create VM4
-resource "vcd_vapp_vm" "vm_4" {
-  vapp_name     = vcd_vapp.vmware_satellite_vapp.name
-  name          = "vm-rhel-04"
-  catalog_name  = "Public Catalog"
-  template_name = "RedHat-7-Template-Official"
-  memory        = 16384
-  cpus          = 4
-  override_template_disk {
-    bus_type         = "paravirtual"
-    size_in_mb       = "102400"
-    bus_number       = 0
-    unit_number      = 0
-    storage_profile  = "10 IOPS/GB"
-  }
-
-  guest_properties = {
-    "guest.hostname" = "vm-rhel-04"
-  }
-
-  network {
-    type               = "org"
-    name               = vcd_vapp_org_network.tutorial_network_new.org_network_name
-    ip_allocation_mode = "POOL"
-    is_primary         = true
-  }
-
-  customization {
-    auto_generate_password     = false
-    admin_password             = "Vmware@1234"
-  }
-}
-# Create VM5
-resource "vcd_vapp_vm" "vm_5" {
-  vapp_name     = vcd_vapp.vmware_satellite_vapp.name
-  name          = "vm-rhel-05"
-  catalog_name  = "Public Catalog"
-  template_name = "RedHat-7-Template-Official"
-  memory        = 16384
-  cpus          = 4
-  override_template_disk {
-    bus_type         = "paravirtual"
-    size_in_mb       = "102400"
-    bus_number       = 0
-    unit_number      = 0
-    storage_profile  = "10 IOPS/GB"
-  }
-
-  guest_properties = {
-    "guest.hostname" = "vm-rhel-05"
-  }
-
-  network {
-    type               = "org"
-    name               = vcd_vapp_org_network.tutorial_network_new.org_network_name
-    ip_allocation_mode = "POOL"
-    is_primary         = true
-  }
-
-  customization {
-    auto_generate_password     = false
-    admin_password             = "Vmware@1234"
-
-  }
-}
-# Create VM6
-resource "vcd_vapp_vm" "vm_6" {
-  vapp_name     = vcd_vapp.vmware_satellite_vapp.name
-  name          = "vm-rhel-06"
-  catalog_name  = "Public Catalog"
-  template_name = "RedHat-7-Template-Official"
-  memory        = 16384
-  cpus          = 4
-  override_template_disk {
-    bus_type         = "paravirtual"
-    size_in_mb       = "102400"
-    bus_number       = 0
-    unit_number      = 0
-    storage_profile  = "10 IOPS/GB"
-  }
-
-  guest_properties = {
-    "guest.hostname" = "vm-rhel-06"
-  }
-
-  network {
-    type               = "org"
-    name               = vcd_vapp_org_network.tutorial_network_new.org_network_name
-    ip_allocation_mode = "POOL"
-    is_primary         = true
-  }
-
-  customization {
-    auto_generate_password     = false
-    admin_password             = "Vmware@1234"
-
+    admin_password             = var.VM_password
   }
 }
 
@@ -436,7 +201,7 @@ resource "null_resource"  "attachhost" {
     connection {
     type     = "ssh"
     user     = "root"
-    password = "Vmware@1234"
+    password = var.VM_password
     host     = "${element(local.publiciplist,count.index)}"
    }
   }
@@ -455,10 +220,10 @@ resource "null_resource"  "attachhost" {
     connection {
     type     = "ssh"
     user     = "root"
-    password = "Vmware@1234"
+    password = var.VM_password
     host     = "${element(local.publiciplist,count.index)}"
    }
   }
-  depends_on = [vcd_vapp_vm.vm_1, vcd_vapp_vm.vm_2, vcd_vapp_vm.vm_3, vcd_vapp_vm.vm_4, vcd_vapp_vm.vm_5, vcd_vapp_vm.vm_6]
+  depends_on = [vcd_vapp_vm.vmware_instance]
 }
 
